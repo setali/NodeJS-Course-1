@@ -12,12 +12,16 @@ console.log(process.resourceUsage())
 console.log(process.memoryUsage())
 
 // process.setUncaughtExceptionCaptureCallback(ex => {
-//   console.log(ex)
-//   throw exe
+//   console.log('Callback', ex)
+//   // throw exe
 // })
 
 process.on('uncaughtException', ex => {
-  console.log(ex)
+  console.log('Event 1', ex)
+})
+
+process.on('uncaughtException', ex => {
+  console.log('Event 2', ex)
 })
 
 console.log(process.hasUncaughtExceptionCaptureCallback())
