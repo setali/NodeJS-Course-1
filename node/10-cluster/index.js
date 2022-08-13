@@ -7,7 +7,7 @@ const numCPUs = os.cpus().length
 if (cluster.isMaster) {
   console.log('Master pid:', process.pid)
 
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < numCPUs; i++) {
     cluster.fork()
   }
 
