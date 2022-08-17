@@ -1,15 +1,27 @@
 import express from 'express'
 import router from './routes'
 import errorHandler from './middleware/error-handler'
-import renderTemplate from './middleware/render-template'
-
-global.__basedir = __dirname
+import path from 'path'
+import fs from 'fs'
 
 const app = express()
 
-app.use(express.static('public'))
+app.engine('ali', (filePath, params, callback) => {
+  let view = fs.readFileSync(filePath, 'utf-8')
 
-app.use(renderTemplate)
+  Object.entries(params).forEach(([key, value]) => {
+    if (typeof value === 'string') {
+      view = view.replace(`#${key}#`, value)
+    }
+  })
+
+  return callback(null, view)
+})
+
+app.set('views', path.resolve(__dirname, 'views'))
+app.set('view engine', 'ali')
+
+app.use(express.static('public'))
 
 const port = 8000
 
