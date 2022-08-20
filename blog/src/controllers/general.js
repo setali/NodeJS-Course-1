@@ -1,5 +1,3 @@
-import { NotFoundError } from '../utils/errors'
-
 export function home (req, res) {
   res.render('index', {
     title: 'Home Page',
@@ -14,8 +12,7 @@ export function about (req, res) {
 }
 
 export function contact (req, res) {
-  res.render('index', {
-    title: 'Contact us',
-    message: 'This is Contact page'
+  res.render('contact', {
+    title: 'Contact us'
   })
 }
