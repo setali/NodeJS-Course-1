@@ -6,9 +6,8 @@ export function home (req, res) {
 }
 
 export function about (req, res) {
-  res.render('index', {
-    title: 'About us',
-    message: 'This is About page'
+  res.render('about', {
+    title: 'About us'
   })
 }
 
