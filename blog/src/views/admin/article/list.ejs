@@ -1,9 +1,32 @@
 <%- include("../../layouts/admin-top.ejs") %>
 
-<p>
-  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Recusandae id magnam
-  repellat esse earum, explicabo eaque beatae accusamus hic laboriosam!
-  Exercitationem recusandae earum soluta? Aut fuga quidem soluta omnis cum!
-</p>
+<div>
+  <a class="action" href="/admin/article/create">Add Article</a>
 
+  <div class="list-items">
+    <table>
+      <thead>
+        <tr>
+          <td>ID</td>
+          <td>Title</td>
+          <td>Actions</td>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (const article of articles) { %>
+        <tr>
+          <td><%= article.id %></td>
+          <td><%= article.title %></td>
+          <td>
+            <a class="action inline" href="/admin/article/<%= article.id %>">Show</a>
+            <a class="action inline" href="/admin/article/<%= article.id %>/edit"
+              >Edit</a
+            >
+          </td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
 <%- include("../../layouts/admin-bottom.ejs") %>
