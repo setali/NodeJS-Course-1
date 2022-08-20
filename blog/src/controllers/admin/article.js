@@ -1,3 +1,7 @@
+import { BadRequestError } from '../../utils/errors'
+
+const articles = []
+
 class ArticleController {
   list (req, res) {
     res.render('admin/article/list', {
@@ -13,8 +17,15 @@ class ArticleController {
   }
 
   add (req, res) {
-    console.log(req.body)
-    res.send('salam')
+    const { title, text } = req.body
+
+    if (!title || !text) {
+      throw new BadRequestError('title and text are required')
+    }
+
+    articles.push({ id: Date.now(), title, text })
+
+    res.redirect('/admin/article')
   }
 }
 

@@ -3,6 +3,7 @@ import router from './routes'
 import errorHandler from './middleware/error-handler'
 import path from 'path'
 import dotenv from 'dotenv'
+import bodyParser from 'body-parser'
 
 dotenv.config()
 
@@ -12,6 +13,7 @@ app.set('views', path.resolve(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
 app.use(express.static('public'))
+app.use(bodyParser.urlencoded({ extended: false }))
 
 const port = 8000
 
