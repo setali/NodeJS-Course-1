@@ -1,9 +1,10 @@
 import { BadRequestError, NotFoundError } from '../../utils/errors'
-
-const articles = []
+import Article from '../../models/article'
 
 class ArticleController {
   list (req, res) {
+    const articles = Article.findAll()
+
     res.render('admin/article/list', {
       title: 'Articles list',
       articles
@@ -13,7 +14,7 @@ class ArticleController {
   get (req, res) {
     const { id } = req.params
 
-    const article = articles.find(el => el.id === +id)
+    const article = Article.find(+id)
 
     if (!article) {
       throw new NotFoundError('Article not found')
@@ -38,7 +39,9 @@ class ArticleController {
       throw new BadRequestError('title and text are required')
     }
 
-    articles.push({ id: Date.now(), title, text })
+    const article = new Article({ title, text })
+
+    article.save()
 
     res.redirect('/admin/article')
   }
@@ -46,7 +49,7 @@ class ArticleController {
   edit (req, res) {
     const { id } = req.params
 
-    const article = articles.find(el => el.id === +id)
+    const article = Article.find(+id)
 
     if (!article) {
       throw new NotFoundError('Article not found')
@@ -64,7 +67,7 @@ class ArticleController {
       throw new BadRequestError('title and text are required')
     }
 
-    const article = articles.find(el => el.id === +id)
+    const article = Article.find(+id)
 
     if (!article) {
       throw new NotFoundError('Article not found')
@@ -73,19 +76,21 @@ class ArticleController {
     article.title = title
     article.text = text
 
+    article.save()
+
     res.redirect('/admin/article')
   }
 
   remove (req, res) {
     const { id } = req.params
 
-    const articleIndex = articles.findIndex(el => el.id === +id)
+    const article = Article.find(+id)
 
-    if (articleIndex === -1) {
+    if (!article) {
       throw new NotFoundError('Article not found')
     }
 
-    articles.splice(articleIndex, 1)
+    Article.remove(+id)
 
     res.redirect('/admin/article')
   }
