@@ -20,13 +20,24 @@ table {
   width: 100%;
 }
 
-a.action {
+.action {
   color: blue;
   text-decoration: underline;
 }
 
-a.action:not(.inline) {
+.action:not(.inline) {
   display: block;
+}
+
+button.action {
+  background: node;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.action-form {
+  display: inline;
 }
 
 .article .row {

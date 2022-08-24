@@ -75,6 +75,20 @@ class ArticleController {
 
     res.redirect('/admin/article')
   }
+
+  remove (req, res) {
+    const { id } = req.params
+
+    const articleIndex = articles.findIndex(el => el.id === +id)
+
+    if (articleIndex === -1) {
+      throw new NotFoundError('Article not found')
+    }
+
+    articles.splice(articleIndex, 1)
+
+    res.redirect('/admin/article')
+  }
 }
 
 export default new ArticleController()
