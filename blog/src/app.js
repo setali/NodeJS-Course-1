@@ -4,6 +4,7 @@ import errorHandler from './middleware/error-handler'
 import path from 'path'
 import dotenv from 'dotenv'
 import bodyParser from 'body-parser'
+import overrideMethod from './middleware/override-method'
 
 dotenv.config()
 
@@ -14,6 +15,7 @@ app.set('view engine', 'ejs')
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: false }))
+app.use(overrideMethod)
 
 const port = 8000
 
