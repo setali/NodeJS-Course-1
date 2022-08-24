@@ -1,7 +1,11 @@
+import Article from '../models/article'
+
 export function home (req, res) {
+  const articles = Article.findAll()
+
   res.render('index', {
     title: 'Home Page',
-    message: 'This is homepage'
+    articles
   })
 }
 

@@ -1,7 +1,21 @@
 <%- include("./layouts/main-top.ejs") %>
 
-<p>
-  <%= message %>
-</p>
+<h3>Last Articles</h3>
+
+<div>
+  <% for(const article of articles) { %>
+  <div>
+    <a href="/article/<%= article.id %>">
+      <%= article.title %>
+    </a>
+  </div>
+  <% } %>
+</div>
+
+<div>
+  <a href="/article">
+    View All articles
+  </a>
+</div>
 
 <%- include("./layouts/main-bottom.ejs") %>
