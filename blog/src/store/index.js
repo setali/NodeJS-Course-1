@@ -1,4 +1,5 @@
-const store = {}
+import fs from 'fs'
+import path from 'path'
 
 export class BaseModel {
   constructor ({ id, ...params }) {
@@ -17,11 +18,11 @@ export class BaseModel {
   }
 
   get data () {
-    return store[this.entityName]
+    return getContent(this.entityName)
   }
 
   static get data () {
-    return store[this.entityName]
+    return getContent(this.entityName)
   }
 
   generateId () {
@@ -29,8 +30,10 @@ export class BaseModel {
   }
 
   save () {
+    const data = this.data
+
     if (this.id) {
-      const entity = this.data.find(el => el.id === this.id)
+      const entity = data.find(el => el.id === this.id)
 
       this.fields.forEach(field => {
         entity[field] = this[field]
@@ -44,8 +47,10 @@ export class BaseModel {
 
       entity.id = this.generateId()
 
-      this.data.push(entity)
+      data.push(entity)
     }
+
+    saveContent(this.entityName, data)
   }
 
   static findAll () {
@@ -60,17 +65,37 @@ export class BaseModel {
   }
 
   static remove (id) {
-    const index = this.data.findIndex(el => el.id === id)
+    const data = this.data
+    const index = data.findIndex(el => el.id === id)
     if (index >= 0) {
-      this.data.splice(index, 1)
+      data.splice(index, 1)
+      saveContent(this.entityName, data)
     }
   }
 }
 
 export function create (Entity) {
-  if (!store[Entity.entityName]) {
-    store[Entity.entityName] = []
+  const filePath = getFilePath(Entity.entityName)
+
+  if (!fs.existsSync(filePath)) {
+    saveContent(Entity.entityName, [])
   }
 
   return Entity
+}
+
+function getFilePath (entityName) {
+  return path.resolve(__dirname, `${entityName}.data`)
+}
+
+function saveContent (entityName, data) {
+  const filePath = getFilePath(entityName)
+  fs.writeFileSync(filePath, JSON.stringify(data))
+}
+
+function getContent (entityName) {
+  const filePath = getFilePath(entityName)
+  const data = fs.readFileSync(filePath)
+
+  return JSON.parse(data)
 }
