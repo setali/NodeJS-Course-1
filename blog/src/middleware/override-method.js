@@ -1,12 +1,14 @@
-export default (req, res, next) => {
+import methodOverride from 'method-override'
+
+export default methodOverride((req, res) => {
   if (
     req.method === 'POST' &&
     typeof req.body === 'object' &&
     req.body._method
   ) {
-    req.originalMethod = req.method
-    req.method = req.body._method.toUpperCase()
-  }
+    const method = req.body._method.toUpperCase()
+    delete req.body._method
 
-  next()
-}
+    return method
+  }
+})
