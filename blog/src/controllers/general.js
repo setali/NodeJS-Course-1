@@ -1,7 +1,7 @@
 import Article from '../models/article'
 
-export function home (req, res) {
-  const articles = Article.findAll()
+export async function home (req, res) {
+  const articles = await Article.findAll()
 
   res.render('index', {
     title: 'Home Page',

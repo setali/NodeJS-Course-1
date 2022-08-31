@@ -1,10 +1,19 @@
-import fs from 'fs'
-import path from 'path'
+import mysql from 'mysql2'
+
+const connection = mysql.createConnection({
+  host: '127.0.0.1',
+  port: 3301,
+  user: 'root',
+  password: '123456',
+  database: 'blog'
+})
+
+connection.connect()
 
 export class BaseModel {
   constructor ({ id, ...params }) {
     this.id = id
-    this.fields.forEach(field => {
+    this.fieldNames.forEach(field => {
       this[field] = params[field]
     })
   }
@@ -13,89 +22,84 @@ export class BaseModel {
     return this.constructor.fields
   }
 
+  get fieldNames () {
+    return this.fields.map(f => f.name)
+  }
+
   get entityName () {
     return this.constructor.entityName
   }
 
-  get data () {
-    return getContent(this.entityName)
-  }
-
-  static get data () {
-    return getContent(this.entityName)
-  }
-
-  generateId () {
-    return Date.now()
-  }
-
   save () {
-    const data = this.data
+    const q = this.id
+      ? `UPDATE ${this.entityName} SET ${this.fieldNames
+          .map(
+            name =>
+              `${name} = ${
+                this[name] === undefined ? 'NULL' : `'${this[name]}'`
+              }
+            `
+          )
+          .join(', ')}
+          WHERE id = ${this.id}
+          `
+      : `INSERT INTO ${this.entityName} (${this.fieldNames.join(', ')})
+            VALUES (${this.fieldNames
+              .map(name =>
+                this[name] === undefined ? 'NULL' : `'${this[name]}'`
+              )
+              .join(', ')})
+      `
 
-    if (this.id) {
-      const entity = data.find(el => el.id === this.id)
+    return query(q)
+  }
 
-      this.fields.forEach(field => {
-        entity[field] = this[field]
-      })
-    } else {
-      const entity = {}
-
-      this.fields.forEach(field => {
-        entity[field] = this[field]
-      })
-
-      entity.id = this.generateId()
-
-      data.push(entity)
-    }
-
-    saveContent(this.entityName, data)
+  remove () {
+    return this.constructor.remove(this.id)
   }
 
   static findAll () {
-    return this.data
+    return query(`SELECT * FROM ${this.entityName}`)
   }
 
-  static find (id) {
-    const data = this.data.find(el => el.id === id)
-    if (data) {
-      return new this(data)
-    }
+  static async find (id) {
+    const results = await query(
+      `SELECT * FROM ${this.entityName} WHERE id = ${id} LIMIT 1`
+    )
+
+    return results[0] ? new this(results[0]) : undefined
   }
 
   static remove (id) {
-    const data = this.data
-    const index = data.findIndex(el => el.id === id)
-    if (index >= 0) {
-      data.splice(index, 1)
-      saveContent(this.entityName, data)
-    }
+    return query(`DELETE FROM ${this.entityName} WHERE id = ${id}`)
   }
+}
+
+function query (q) {
+  return new Promise((resolve, reject) => {
+    connection.query(q, (err, results) => {
+      err ? reject(err) : resolve(results)
+    })
+  })
 }
 
 export function create (Entity) {
-  const filePath = getFilePath(Entity.entityName)
-
-  if (!fs.existsSync(filePath)) {
-    saveContent(Entity.entityName, [])
-  }
+  query(`SHOW TABLES LIKE '${Entity.entityName}'`).then(results => {
+    if (results.length === 0) {
+      query(`CREATE TABLE IF NOT EXISTS ${Entity.entityName} 
+        (id INT NOT NULL AUTO_INCREMENT,
+          ${Entity.fields
+            .map(
+              field =>
+                `${field.name} ${field.type} ${
+                  field.null === false ? 'NOT NULL' : ''
+                }`
+            )
+            .join(', ')},
+            PRIMARY KEY (id)
+        );`).then(() => console.log(`${Entity.entityName} table created`))
+    }
+  })
 
   return Entity
-}
-
-function getFilePath (entityName) {
-  return path.resolve(__dirname, `${entityName}.data`)
-}
-
-function saveContent (entityName, data) {
-  const filePath = getFilePath(entityName)
-  fs.writeFileSync(filePath, JSON.stringify(data))
-}
-
-function getContent (entityName) {
-  const filePath = getFilePath(entityName)
-  const data = fs.readFileSync(filePath)
-
-  return JSON.parse(data)
 }
