@@ -32,7 +32,7 @@ class ArticleController {
     })
   }
 
-  add (req, res) {
+  async add (req, res) {
     const { title, text } = req.body
 
     if (!title || !text) {
@@ -41,7 +41,7 @@ class ArticleController {
 
     const article = new Article({ title, text })
 
-    article.save()
+    await article.save()
 
     res.redirect('/admin/article')
   }
@@ -90,7 +90,6 @@ class ArticleController {
       throw new NotFoundError('Article not found')
     }
 
-    // await Article.remove(+id)
     await article.remove()
 
     res.redirect('/admin/article')
