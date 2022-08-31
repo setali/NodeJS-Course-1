@@ -22,9 +22,9 @@ export async function bootstrap () {
 
   app.use(errorHandler)
 
-  await sequelize.authenticate()  
+  await sequelize.authenticate()
 
-  await sequelize.sync()
+  await sequelize.sync({ alter: true })
 
   app.listen(8000, () => {
     console.log(`Server is running on port ${port}`)

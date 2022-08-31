@@ -1,11 +1,3 @@
-.form-item {
-  margin: 1rem;
-}
-
-button {
-  padding: 0.2rem 1rem;
-}
-
 .list-items {
   margin: 2rem 1rem;
 }
@@ -34,10 +26,6 @@ button.action {
   border: none;
   padding: 0;
   cursor: pointer;
-}
-
-.action-form {
-  display: inline;
 }
 
 .article .row {
