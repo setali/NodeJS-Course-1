@@ -3,7 +3,9 @@ import Article from '../../models/article'
 
 class ArticleController {
   async list (req, res) {
-    const articles = await Article.findAll()
+    const articles = await Article.findAll({ include: ['user'] })
+
+    console.log(articles)
 
     res.render('admin/article/list', {
       title: 'Articles list',
@@ -15,7 +17,7 @@ class ArticleController {
   async get (req, res) {
     const { id } = req.params
 
-    const article = await Article.find(+id)
+    const article = await Article.find(+id, { include: ['user'] })
 
     if (!article) {
       throw new NotFoundError('Article not found')
@@ -41,7 +43,7 @@ class ArticleController {
       throw new BadRequestError('title and text are required')
     }
 
-    const article = new Article({ title, text })
+    const article = new Article({ title, text, userId: req.user.id })
 
     await article.save()
 
