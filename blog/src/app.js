@@ -5,6 +5,10 @@ import path from 'path'
 import bodyParser from 'body-parser'
 import overrideMethod from './middleware/override-method'
 import { sequelize } from './config/database'
+import session from 'express-session'
+import connectRedis from 'connect-redis'
+import Redis from 'ioredis'
+import auth from './middleware/auth'
 
 export async function bootstrap () {
   const app = express()
@@ -16,7 +20,23 @@ export async function bootstrap () {
   app.use(bodyParser.urlencoded({ extended: false }))
   app.use(overrideMethod)
 
-  const port = 8000
+  const RedisStore = connectRedis(session)
+
+  const redisClient = new Redis(6371)
+
+  const store = new RedisStore({ client: redisClient })
+
+  app.use(
+    session({
+      store,
+      secret: 'my secret',
+      resave: false
+    })
+  )
+
+  app.use(auth)
+
+  const port = process.env.PORT
 
   app.use(router)
 

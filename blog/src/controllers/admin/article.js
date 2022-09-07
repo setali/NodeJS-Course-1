@@ -7,7 +7,8 @@ class ArticleController {
 
     res.render('admin/article/list', {
       title: 'Articles list',
-      articles
+      articles,
+      user: req.user
     })
   }
 
@@ -22,7 +23,8 @@ class ArticleController {
 
     res.render('admin/article/show', {
       title: article.title,
-      article
+      article,
+      user: req.user
     })
   }
 
@@ -55,7 +57,11 @@ class ArticleController {
       throw new NotFoundError('Article not found')
     }
 
-    res.render('admin/article/edit', { title: 'Edit article', article })
+    res.render('admin/article/edit', {
+      title: 'Edit article',
+      article,
+      user: req.user
+    })
   }
 
   async update (req, res) {

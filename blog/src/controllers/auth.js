@@ -10,6 +10,10 @@ class AuthController {
   }
 
   loginPage (req, res) {
+    if (req.user) {
+      res.redirect('/')
+    }
+
     res.render('auth/login', {
       title: 'Login'
     })
@@ -32,10 +36,11 @@ class AuthController {
       throw new BadRequestError('Credential error')
     }
 
-    console.log(this)
     this.transformUser(user)
 
-    res.json(user)
+    req.session.user = user
+
+    res.redirect('/')
   }
 
   registerPage (req, res) {
@@ -45,6 +50,10 @@ class AuthController {
   }
 
   async register (req, res) {
+    if (req.user) {
+      res.redirect('/')
+    }
+
     const { username, email, password } = req.body
 
     if (!username || !email || !password) {
@@ -65,9 +74,15 @@ class AuthController {
       }
     }
 
-    this.transformUser(user)
+    res.redirect('/login')
+  }
 
-    res.json(user)
+  logout (req, res) {
+    req.session.destroy(error => {
+      if (!error) {
+        res.redirect('/')
+      }
+    })
   }
 }
 
