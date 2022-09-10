@@ -1,8 +1,8 @@
 <div class="pagination">
   <ul>
-    <% if (page > 1) { %>
+    <% if (hasPrevPage) { %>
     <li>
-      <a href="?page=<%=  page - 1 %>">Perv</a>
+      <a href="?page=<%=  prevPage %>">Perv</a>
     </li>
     <% } %> <% for (let i = 1; i <= pages; i++) { %>
     <li class="<%= i === page ? 'active' : '' %>">
@@ -10,9 +10,9 @@
         <%= i %>
       </a>
     </li>
-    <% } %> <% if (page < pages) { %>
+    <% } %> <% if (hasNextPage) { %>
     <li>
-      <a href="?page=<%=  page + 1 %>">Next</a>
+      <a href="?page=<%=  nextPage %>">Next</a>
     </li>
     <% } %>
   </ul>
