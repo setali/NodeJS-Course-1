@@ -46,3 +46,15 @@ main {
 footer {
   text-align: center;
 }
+
+.pagination > ul {
+  list-style: none;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.pagination .active {
+  color: blue;
+  text-decoration: underline;
+}

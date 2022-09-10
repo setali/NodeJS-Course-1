@@ -1,7 +1,7 @@
 import Article from '../models/article'
 
 export async function home (req, res) {
-  const articles = await Article.findAll()
+  const articles = await Article.findAll({ limit: 3, order: [['id', 'desc']] })
 
   res.render('index', {
     title: 'Home Page',
