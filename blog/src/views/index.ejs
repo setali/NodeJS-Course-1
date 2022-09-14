@@ -1,19 +1,27 @@
 <%- include("./layouts/main-top.ejs") %>
 
-<h3>Last Articles</h3>
-
-<div>
+<div class="article-list">
   <% for(const article of articles) { %>
-  <div>
-    <a href="/article/<%= article.id %>">
-      <%= article.title %>
-    </a>
+  <div class="article">
+    <div
+      class="image"
+      style="background-image: url('<%= article.image %>');"
+    ></div>
+
+    <div class="detail">
+      <a href="/article/<%= article.id %>">
+        <h3><%= article.title %></h3>
+      </a>
+      <p>
+        <%= article.text %>
+      </p>
+    </div>
   </div>
   <% } %>
 </div>
 
-<div>
-  <a href="/article">
+<div class="all-article-link">
+  <a class="action" href="/article">
     View All articles
   </a>
 </div>

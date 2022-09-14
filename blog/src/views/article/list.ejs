@@ -1,15 +1,24 @@
 <%- include("../layouts/main-top.ejs") %>
 
-<div>
+<div class="article-list">
   <% for(const article of items) { %>
-  <div>
-    <a href="/article/<%= article.id %>">
-      <%= article.title %>
-    </a>
+  <div class="article">
+    <div
+      class="image"
+      style="background-image: url('<%= article.image %>');"
+    ></div>
+
+    <div class="detail">
+      <a href="/article/<%= article.id %>">
+        <h3><%= article.title %></h3>
+      </a>
+      <p>
+        <%= article.text %>
+      </p>
+    </div>
   </div>
   <% } %>
 </div>
 
-<%- include("../includes/pagination.ejs") %>
-
-<%- include("../layouts/main-bottom.ejs") %>
+<%- include("../includes/pagination.ejs") %> <%-
+include("../layouts/main-bottom.ejs") %>
