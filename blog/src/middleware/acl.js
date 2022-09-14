@@ -9,7 +9,6 @@ export default function acl (roleName) {
 
     const { role } = req.user
 
-    console.log(ROLE_HIERARCHY[role], role, roleName)
     if (role === roleName || ROLE_HIERARCHY[role]?.includes(roleName)) {
       return next()
     }
