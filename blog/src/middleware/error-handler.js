@@ -7,8 +7,15 @@ export default (err, req, res, next) => {
       ? err.message
       : 'Server error, please call admin'
 
-  res.status(status).render('error', {
-    title: `Error ${status}`,
-    message
-  })
+  if (req.url.startsWith('/api')) {
+    res.status(status).json({
+      code: status,
+      message
+    })
+  } else {
+    res.status(status).render('error', {
+      title: `Error ${status}`,
+      message
+    })
+  }
 }
