@@ -1,13 +1,18 @@
 import express from 'express'
 import ArticleController from '../../../controllers/admin/article'
+import acl from '../../../middleware/acl'
 
 const router = express.Router()
 
-router.get('/', ArticleController.list)
-router.get('/:id(\\d+)', ArticleController.get)
-router.post('/', ArticleController.add)
-router.put('/:id([0-9]+)', ArticleController.update)
-router.delete('/:id([0-9]+)', ArticleController.remove)
+router.get('/', acl('WRITER'), ArticleController.list)
+
+router.get('/:id(\\d+)', acl('WRITER'), ArticleController.get)
+
+router.post('/', acl('WRITER'), ArticleController.add)
+
+router.put('/:id([0-9]+)', acl('MODERATOR'), ArticleController.update)
+
+router.delete('/:id([0-9]+)', acl('ADMIN'), ArticleController.remove)
 
 // RESTFUL API
 // /article     GET

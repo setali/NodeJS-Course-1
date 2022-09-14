@@ -7,9 +7,17 @@ export class NotFoundError extends Error {
 }
 
 export class NotAuthorizeError extends Error {
-  status = 403
+  status = 401
 
   constructor (message = 'Not Authorize') {
+    super(message)
+  }
+}
+
+export class ForbiddenError extends Error {
+  status = 403
+
+  constructor (message = 'Forbidden') {
     super(message)
   }
 }
