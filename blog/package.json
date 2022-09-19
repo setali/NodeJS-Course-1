@@ -25,7 +25,8 @@
     "multer": "^1.4.5-lts.1",
     "mysql2": "^2.3.3",
     "pug": "^3.0.2",
-    "sequelize": "^6.21.4"
+    "sequelize": "^6.21.4",
+    "winston": "^3.8.2"
   },
   "devDependencies": {
     "@babel/core": "^7.18.10",

@@ -1,5 +1,6 @@
 import { BadRequestError, NotFoundError } from '../../utils/errors'
 import Article from '../../models/article'
+import log from '../../utils/logger'
 
 class ArticleController {
   async list (req, res) {
@@ -28,6 +29,8 @@ class ArticleController {
     const article = new Article({ title, text, image, userId: req.user.id })
 
     await article.save()
+
+    log({ message: 'article:create', metadata: { article, user: req.user } })
 
     res.json(article)
   }
@@ -62,6 +65,8 @@ class ArticleController {
     }
 
     await article.remove()
+
+    log({ message: 'article:remove', metadata: { article } })
 
     res.json(article)
   }
