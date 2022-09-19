@@ -7,8 +7,11 @@ import overrideMethod from './middleware/override-method'
 import { sequelize } from './config/database'
 import session from 'express-session'
 import connectRedis from 'connect-redis'
-import Redis from 'ioredis'
 import auth from './middleware/auth'
+import socketIO from 'socket.io'
+import http from 'http'
+import chatApp from './chat'
+import { redisClient } from './config/redis'
 
 export async function bootstrap () {
   const app = express()
@@ -22,17 +25,15 @@ export async function bootstrap () {
 
   const RedisStore = connectRedis(session)
 
-  const redisClient = new Redis(6371)
-
   const store = new RedisStore({ client: redisClient })
 
-  app.use(
-    session({
-      store,
-      secret: 'my secret',
-      resave: false
-    })
-  )
+  const sessionMiddleware = session({
+    store,
+    secret: 'my secret',
+    resave: false
+  })
+
+  app.use(sessionMiddleware)
 
   app.use(auth)
 
@@ -46,7 +47,21 @@ export async function bootstrap () {
 
   await sequelize.sync({ alter: true })
 
-  app.listen(8000, () => {
+  const server = http.createServer(app)
+
+  const io = new socketIO.Server(server)
+
+  io.use((socket, next) => {
+    sessionMiddleware(socket.request, {}, next)
+  })
+
+  io.use((socket, next) => {
+    auth(socket.request, {}, next)
+  })
+
+  io.on('connection', socket => chatApp(io, socket))
+
+  server.listen(8000, () => {
     console.log(`Server is running on port ${port}`)
   })
 }
