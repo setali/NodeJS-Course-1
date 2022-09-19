@@ -30,7 +30,10 @@ class ArticleController {
 
     await article.save()
 
-    log({ message: 'article:create', metadata: { article, user: req.user } })
+    log({
+      message: 'article:create',
+      metadata: { article: article.dataValues, user: req.user.dataValues }
+    })
 
     res.json(article)
   }

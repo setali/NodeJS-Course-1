@@ -21,7 +21,7 @@ export default (err, req, res, next) => {
   log({
     level: 'error',
     message: err.message,
-    metadata: { user: req.user, url: req.url, status }
+    metadata: { user: req.user, url: req.url, status, stack: err.stack }
   })
 
   if (req.url.startsWith('/api')) {
