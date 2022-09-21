@@ -1,16 +1,18 @@
 import winston from 'winston'
 import 'winston-mongodb'
 
+export const mongoTransport = new winston.transports.MongoDB({
+  db: process.env.MONGO_URL,
+  collection: process.env.MONGO_LOG_COLLECTION,
+  options: {
+    useUnifiedTopology: true
+  }
+})
+
 export const logger = winston.createLogger({
   level: 'info',
   format: winston.format.json(),
-  transports: [
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.MongoDB({
-      db: 'mongodb://localhost:27001/blog',
-      collection: 'log'
-    })
-  ]
+  transports: [mongoTransport]
 })
 
 function log (options) {

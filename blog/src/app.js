@@ -1,4 +1,5 @@
 import express from 'express'
+import 'express-async-errors'
 import router from './routes'
 import errorHandler from './middleware/error-handler'
 import path from 'path'
@@ -21,6 +22,7 @@ export async function bootstrap () {
 
   app.use(express.static('public'))
   app.use(bodyParser.urlencoded({ extended: false }))
+  app.use(express.json())
   app.use(overrideMethod)
 
   const RedisStore = connectRedis(session)
@@ -30,14 +32,13 @@ export async function bootstrap () {
   const sessionMiddleware = session({
     store,
     secret: 'my secret',
-    resave: false
+    resave: false,
+    saveUninitialized: true
   })
 
   app.use(sessionMiddleware)
 
   app.use(auth)
-
-  const port = process.env.PORT
 
   app.use(router)
 
@@ -61,7 +62,5 @@ export async function bootstrap () {
 
   io.on('connection', socket => chatApp(io, socket))
 
-  server.listen(8000, () => {
-    console.log(`Server is running on port ${port}`)
-  })
+  return server
 }

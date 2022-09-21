@@ -2,7 +2,9 @@ import { JsonSchemaValidation } from 'express-jsonschema'
 import log from '../utils/logger'
 
 export default (err, req, res, next) => {
-  console.log(err)
+  if (process.env.NODE_ENV === 'development') {
+    console.log(err)
+  }
 
   if (err instanceof JsonSchemaValidation) {
     return res.status(400).json({
