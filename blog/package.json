@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon --exec babel-node src/index.js",
+    "prod": "babel-node src/index.js",
     "test": "jest --detectOpenHandles",
     "test:watch": "jest --watchAll"
   },
